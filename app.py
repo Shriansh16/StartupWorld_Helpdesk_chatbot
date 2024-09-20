@@ -16,7 +16,7 @@ load_dotenv()
 
 
 from langchain_groq import ChatGroq
-api_key1=os.getenv("GROQ_API_KEY")
+api_key1=st.secrets["GROQ_API_KEY"]
 # Streamlit setup  
 
 st.subheader("HELPDESK CHAT")
@@ -35,7 +35,7 @@ if 'buffer_memory' not in st.session_state:
     st.session_state.buffer_memory = ConversationBufferWindowMemory(k=1, return_messages=True)
 
 # Define prompt templates
-system_msg_template = SystemMessagePromptTemplate.from_template(template="""Answer as a friendly helpdesk agent and use the provided context to build the answer and If the answer is not contained within the text, say 'I'm not sure about that, but I'm here to help with anything else you need!'. Do not say 'According to the provided context' or anything similar. Just give the answer naturally.""")                                                                        
+system_msg_template = SystemMessagePromptTemplate.from_template(template="""Answer as a friendly, knowledgeable helpdesk agent, speaking directly to the user in a conversational and engaging way. Do not quote, list, or directly summarize text from the context. Instead, use the information naturally to provide clear, helpful answers, as if you're explaining it in your own words. Avoid phrases like 'According to the provided information' or 'It can be inferred.' If details are missing, politely guide the user or offer general advice in a friendly tone.""")                                                                        
 human_msg_template = HumanMessagePromptTemplate.from_template(template="{input}")
 
 prompt_template = ChatPromptTemplate.from_messages([system_msg_template, MessagesPlaceholder(variable_name="history"), human_msg_template])
@@ -73,6 +73,8 @@ with text_container:
             response = re.sub(r'(?i)based on the provided context,', '', response)
             response = re.sub(r'(?i)based on the provided document,', '', response)
             response = re.sub(r'(?i)according to the context,', '', response)
+            response = re.sub(r'(?i)based on the provided documents,', '', response)
+            response = re.sub(r'(?i)based on the information provided,', '', response)
 
 
         

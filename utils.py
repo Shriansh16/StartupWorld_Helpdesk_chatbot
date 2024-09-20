@@ -9,7 +9,7 @@ from groq import Groq
 from langchain.document_loaders import DirectoryLoader
 from langchain.document_loaders import PyPDFLoader
 load_dotenv()
-pkey=os.getenv("PINECONE_API_KEY")
+pkey=st.secrets["PINECONE_API_KEY"]
 
 
 import pickle
@@ -36,13 +36,13 @@ def find_match(input):
                        )
     result=vectorstore.similarity_search(
     input,  # our search query
-    k=5  # return 6 most relevant docs
+    k=5  # return 5 most relevant docs
       )
     return result
 def query_refiner(conversation, query):
   #  if not conversation or not query:
    #     return query
-    api_key1 = os.getenv("GROQ_API_KEY")
+    api_key1 = st.secrets["GROQ_API_KEY"]
     client = Groq(api_key=api_key1)
     response = client.chat.completions.create(
     model="gemma-7b-it",
